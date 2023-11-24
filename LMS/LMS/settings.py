@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'mptt',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
