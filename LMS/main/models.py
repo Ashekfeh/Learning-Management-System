@@ -1,12 +1,22 @@
 from django.db import models
 from django.core.validators import RegexValidator
+# from django.utils.timezone import datetime
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-from datetime import timedelta
+# from datetime import timedelta
 import humanize
 
 alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', 'Only alphanumeric characters are allowed.')
+
+
+
+class BaseModel(models.Model):
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+#### COURSES ####
 
 class Category(MPTTModel):
     name = models.CharField(max_length=245, unique=True)
@@ -18,24 +28,15 @@ class Category(MPTTModel):
 
     def __str__(self):
         return self.name
+    
+class Lesson(BaseModel):
+    title = models.CharField(max_length=245)
+    content = models.TextField()
+    course_name = models.ForeignKey('Course', on_delete=models.CASCADE)
 
+    
 
-
-
-class Course(models.Model):
-    WEB = 'WD'
-    ACC = 'AC'
-    DM = 'DM'
-    IND = 'ID'
-
-
-    categories = [
-        (WEB, 'web dev'),
-        (ACC, 'accounting'),
-        (DM, 'digital marketing'),
-        (IND, 'Interior Design')
-    ]
-
+class Course(BaseModel):
     ENGLISH = 'EN'
     ARABIC = 'AR'
     FRENCH = 'FR'
@@ -62,16 +63,13 @@ class Course(models.Model):
         return f'{self.title}, {humanize.precisedelta(self.duration, minimum_unit="minutes")}'
 
 
-class UserExtension(models.Model):
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class UserExtension(BaseModel):
     is_active = models.BooleanField(default=True)
-    
-    username = models.CharField(max_length=16, blank=False, unique=True, default='deleted_user')
-    first_name = models.CharField(max_length=200, blank=False, validators=[alphanumeric])
-    last_name = models.CharField(max_length=200, blank=False, validators=[alphanumeric])
-    email = models.EmailField(max_length=245)
+
+    username = models.CharField(max_length=16, blank=True, unique=True, default='deleted_user')
+    first_name = models.CharField(max_length=200, blank=True, validators=[alphanumeric])
+    last_name = models.CharField(max_length=200, blank=True, validators=[alphanumeric])
+    email = models.EmailField(max_length=245, blank=True)
 
 
 class Teacher(UserExtension):
