@@ -1,6 +1,11 @@
 from django.db import models
+from django.core.validators import RegexValidator
+
 from datetime import timedelta
 import humanize
+
+alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', 'Only alphanumeric characters are allowed.')
+
 
 class Course(models.Model):
     WEB = 'WD'
@@ -43,9 +48,10 @@ class Course(models.Model):
 
 
 class UserExtension(models.Model):
-
-    first_name = models.CharField(max_length=200, blank=False)
-    last_name = models.CharField(max_length=200, blank=False)
+    
+    username = models.CharField(max_length=16, blank=False, unique=True, default='deleted_user')
+    first_name = models.CharField(max_length=200, blank=False, validators=[alphanumeric])
+    last_name = models.CharField(max_length=200, blank=False, validators=[alphanumeric])
     email = models.EmailField(max_length=245)
 
 
@@ -54,7 +60,8 @@ class Teacher(UserExtension):
     courses = models.ManyToManyField(Course, blank=True)
 
     def __str__(self):
-        return f'{self.first_name.capitalize()} {self.last_name.capitalize()}'
+        return f'{self.first_name.capitalize()} {self.last_name.capitalize()} ({self.username})'
     
 
-
+class Student(UserExtension):
+    registered_courses = models.ManyToManyField(Course)
