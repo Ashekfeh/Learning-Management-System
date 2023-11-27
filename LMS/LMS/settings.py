@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'course',
     'mptt',
     'rest_framework',
-    'user_profile'
+    'user_profile',
+    'quiz'
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import Course
-from .models import Category
+from .models import Course, Category, Lesson
 
 from mptt.admin import DraggableMPTTAdmin
 
@@ -18,3 +17,5 @@ admin.site.register(
         'indented_title',
     ),
 )
+
+admin.site.register(Lesson)
